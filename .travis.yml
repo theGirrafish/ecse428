@@ -6,3 +6,5 @@ install:
 script: behave
 addons:
   chrome: stable
+services:
+  - xvfb

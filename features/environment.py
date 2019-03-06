@@ -4,18 +4,9 @@ from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 
-DEBUG = True
-
 @fixture
 def browser(context):
-    options = Options()
-    if not DEBUG:
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        options.add_argument('--window-size=1920,1080')
-        options.add_argument('--start-maximized')
-        options.add_argument('--disable-extensions')
-    context.browser = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
+    context.browser = webdriver.Chrome(ChromeDriverManager().install())
     yield context.browser
     context.browser.quit()
 
