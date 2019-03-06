@@ -6,7 +6,10 @@ import time
 
 @fixture
 def browser(context):
-    context.browser = webdriver.Chrome(ChromeDriverManager().install())
+    options = Options()
+    options.add_argument('--disable-gpu')
+    options.add_argument('--start-maximized')
+    context.browser = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
     yield context.browser
     context.browser.quit()
 
