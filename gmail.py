@@ -33,4 +33,4 @@ def log_in(context, username, password):
     next_button = context.browser.find_element_by_id('passwordNext')
     next_button.click()
 
-    wait.until(ec.visibility_of_element_located((By.ID, 'gb')))
+    wait.until(ec.title_contains(username))
