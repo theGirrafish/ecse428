@@ -1,8 +1,0 @@
-dist: trusty
-language: python
-python: 3.6
-install:
-  - pip install -r requirements.txt
-script: xvfb-run --server-args="-screen 0 1920x1080x24" behave
-addons:
-  chrome: stable
