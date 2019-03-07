@@ -8,8 +8,8 @@ import time
 
 from gmail import Gmail
 
-DEBUG = True
-HEADLESS = False
+DEBUG = False
+HEADLESS = True
 
 @fixture
 def browser(context):
