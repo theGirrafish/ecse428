@@ -56,7 +56,7 @@ Feature: send email with image attachment
             Sender
             """
         And we attached "imageA.jpg" to the email
-        When we send the email
+        When we try to send the email
         Then we should receive an email error
 
     Scenario: 4. Send an email to recipientA with too large attachment (>25MB)
@@ -70,8 +70,7 @@ Feature: send email with image attachment
             Regards,
             Sender
             """
-        And we attached "imageLarge.jpg" to the email
-        When we send the email
+        When we attach "imageLarge.jpg" to the email
         Then we should receive an attachment error
 
     Scenario: 5. Send an email to recipientA with multiple attachments (total>25MB)
@@ -85,8 +84,7 @@ Feature: send email with image attachment
             Regards,
             Sender
             """
-        And we attached "imageC1.jpg" to the email
-        And we attached "imageC2.jpg" to the email
-        And we attached "imageC3.jpg" to the email
-        When we send the email
+        And we attached "imageC1.png" to the email
+        And we attached "imageC2.png" to the email
+        When we attach "imageC3.jpg" to the email
         Then we should receive an attachment error
