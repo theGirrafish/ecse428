@@ -8,8 +8,8 @@ import os
 
 from gmail import Gmail
 
-DEBUG = True
-HEADLESS = True
+DEBUG = False
+HEADLESS = False
 
 @fixture
 def browser(context):
@@ -30,7 +30,7 @@ def browser(context):
     context.browser.quit()
 
 def before_all(context):
-    context.gmail = Gmail(context, timeout=60)
+    context.gmail = Gmail(context, timeout=30)
 
 def before_scenario(context, scenario):
     use_fixture(browser, context)
