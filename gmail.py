@@ -7,8 +7,14 @@ class Gmail:
     def __init__(self, context, timeout):
         self.context = context
         self.timeout = timeout
+
         self.new_ui = False
+
         self.images_dir = os.path.join(os.getcwd(), 'images')
+        self.debug_dir = os.path.join(os.getcwd(), 'debug')
+        if not os.path.exists(self.debug_dir):
+            os.makedirs(self.debug_dir)
+            
         self.sender = {'email': 'sender.ecse428@gmail.com',
                 'password': 'Ecse428AssignmentB'}
         self.recipientA = {'email': 'recipienta.ecse428@gmail.com',
