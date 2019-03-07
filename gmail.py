@@ -24,6 +24,8 @@ class Gmail:
         self.context.browser.get(self.login_url)
 
         wait = WebDriverWait(self.context.browser, self.timeout)
+
+        # Check if we are given the new signin form
         if 'https://accounts.google.com/signin/v2/identifier?' in self.context.browser.current_url:
             self.new_ui = True
 
@@ -35,8 +37,6 @@ class Gmail:
             password_field.send_keys(password)
 
             self.context.browser.find_element(By.ID, 'passwordNext').click()
-
-            wait.until(ec.title_contains(username))
         else:
             self.context.browser.find_element(By.ID, 'Email').send_keys(username)
             self.context.browser.find_element(By.NAME, 'signIn').click()
@@ -46,7 +46,7 @@ class Gmail:
 
             self.context.browser.find_element(By.ID, 'signIn').click()
 
-            wait.until(ec.title_contains(username))
+        wait.until(ec.element_to_be_clickable((By.CSS_SELECTOR, '[title="Inbox"]')))
 
     def fill_field(self, method, field_path, text):
         field = self.context.browser.find_element(method, field_path)
