@@ -8,12 +8,12 @@ def step_logged_in(context):
 
 @given('we are on the inbox page')
 def step_at_inbox(context):
-    context.browser.find_element(By.CSS_SELECTOR, '[title="Inbox"]').click()
+    context.browser.get(context.gmail.base_url + '#inbox')
 
 @given('we are composing an email')
 def step_given_composing(context):
     context.gmail.compose_email()
-    
+
 @given('it is addressed to "{recipient}"')
 def step_given_recipient(context, recipient):
     email = context.gmail.get_credentials(recipient)['email']

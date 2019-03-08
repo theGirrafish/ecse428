@@ -14,7 +14,7 @@ class Gmail:
         self.debug_dir = os.path.join(os.getcwd(), 'debug')
         if not os.path.exists(self.debug_dir):
             os.makedirs(self.debug_dir)
-            
+
         self.sender = {'email': 'sender.ecse428@gmail.com',
                 'password': 'Ecse428AssignmentB'}
         self.recipientA = {'email': 'recipienta.ecse428@gmail.com',
@@ -24,7 +24,7 @@ class Gmail:
         self.invalidRecipient = {'email': 'notvalid.1.gmail@com'}
 
         self.login_url = 'https://www.gmail.com'
-        self.inbox_url = 'https://mail.google.com/mail/#inbox'
+        self.base_url = 'https://mail.google.com/mail/'
 
     def log_in(self, username, password):
         self.context.browser.get(self.login_url)
@@ -52,7 +52,7 @@ class Gmail:
 
             self.context.browser.find_element(By.ID, 'signIn').click()
 
-        wait.until(ec.element_to_be_clickable((By.CSS_SELECTOR, '[title="Inbox"]')))
+        wait.until(ec.title_contains(username))
 
     def fill_field(self, method, field_path, text):
         field = self.context.browser.find_element(method, field_path)
@@ -93,5 +93,21 @@ class Gmail:
     def check_email_received(self, recipient):
         pass
 
-    def delete_emails(self):
-        pass
+    def select_all_and_delete(self, wait):
+        for elem in self.context.browser.find_elements(By.CSS_SELECTOR, 'div[role="button"][aria-label="Select"] span[role="checkbox"]'):
+            if elem.is_displayed():
+                elem.click()
+                break
+        for elem in self.context.browser.find_elements(By.CSS_SELECTOR, '[role="button"][aria-label="Delete"]'):
+            if elem.is_displayed():
+                elem.click()
+                break
+        wait.until(ec.element_to_be_clickable((By.XPATH, '//*[contains(text(),"moved to")]')))
+
+    def empty_trash(self, wait):
+        self.context.browser.get(self.base_url + '#trash')
+        empty_btn = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@role="button"][contains(text(), "Empty")]')))
+        empty_btn.click()
+        delete_btn = wait.until(ec.element_to_be_clickable((By.CSS_SELECTOR, '[role="alertdialog"]:not([aria-hidden]) [name="ok"]')))
+        delete_btn.click()
+        wait.until(ec.element_to_be_clickable((By.XPATH, '//*[text()="All messages have been deleted."]')))

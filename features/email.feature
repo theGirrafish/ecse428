@@ -44,47 +44,47 @@ Feature: send email with image attachment
         And the body should match the sample text
         And the attachment should match the image
 
-    Scenario: 3. Send an email to recipient with invalid email address
-        Given we are composing an email
-        And it is addressed to "invalidRecipient"
-        And the subject contains "Scenario3"
-        And a sample text is entered in the body
-            """
-            Hello, this email should not send.
+    # Scenario: 3. Send an email to recipient with invalid email address
+    #     Given we are composing an email
+    #     And it is addressed to "invalidRecipient"
+    #     And the subject contains "Scenario3"
+    #     And a sample text is entered in the body
+    #         """
+    #         Hello, this email should not send.
 
-            Regards,
-            Sender
-            """
-        And we attached "imageA.jpg" to the email
-        When we try to send the email
-        Then we should receive an email error
+    #         Regards,
+    #         Sender
+    #         """
+    #     And we attached "imageA.jpg" to the email
+    #     When we try to send the email
+    #     Then we should receive an email error
 
-    Scenario: 4. Send an email to recipientA with too large attachment (>25MB)
-        Given we are composing an email
-        And it is addressed to "recipientA"
-        And the subject contains "Scenario4"
-        And a sample text is entered in the body
-            """
-            Hello, this email should not send.
+    # Scenario: 4. Send an email to recipientA with too large attachment (>25MB)
+    #     Given we are composing an email
+    #     And it is addressed to "recipientA"
+    #     And the subject contains "Scenario4"
+    #     And a sample text is entered in the body
+    #         """
+    #         Hello, this email should not send.
 
-            Regards,
-            Sender
-            """
-        When we attach "imageLarge.jpg" to the email
-        Then we should receive an attachment error
+    #         Regards,
+    #         Sender
+    #         """
+    #     When we attach "imageLarge.jpg" to the email
+    #     Then we should receive an attachment error
 
-    Scenario: 5. Send an email to recipientA with multiple attachments (total>25MB)
-        Given we are composing an email
-        And it is addressed to "recipientA"
-        And the subject contains "Scenario5"
-        And a sample text is entered in the body
-            """
-            Hello, this email should not send.
+    # Scenario: 5. Send an email to recipientA with multiple attachments (total>25MB)
+    #     Given we are composing an email
+    #     And it is addressed to "recipientA"
+    #     And the subject contains "Scenario5"
+    #     And a sample text is entered in the body
+    #         """
+    #         Hello, this email should not send.
 
-            Regards,
-            Sender
-            """
-        And we attached "imageC1.png" to the email
-        And we attached "imageC2.png" to the email
-        When we attach "imageC3.jpg" to the email
-        Then we should receive an attachment error
+    #         Regards,
+    #         Sender
+    #         """
+    #     And we attached "imageC1.png" to the email
+    #     And we attached "imageC2.png" to the email
+    #     When we attach "imageC3.jpg" to the email
+    #     Then we should receive an attachment error
