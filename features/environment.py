@@ -21,6 +21,7 @@ def browser(context):
     options.add_argument('--window-size=1920,1080')
     options.add_argument('--start-maximized')
     options.add_argument('--no-sandbox')
+    options.add_argument('--lang=en-us')
     if HEADLESS:
         options.add_argument('--headless')
         if DEBUG:
@@ -52,10 +53,8 @@ def delete_emails(context):
 
     context.gmail.log_in(context.gmail.sender['email'], context.gmail.sender['password'])
 
-    context.gmail.context.browser.get(context.gmail.base_url + '#sent')
-    wait.until(ec.title_contains('Sent'))
-    context.gmail.select_all_and_delete(wait)
-
+    context.gmail.select_all_and_delete(wait, 'in:sent', 'Sent')
+    context.gmail.select_all_and_delete(wait, 'in:draft', 'Drafts', draft=True)
     context.gmail.empty_trash(wait)
 
     # Delete recipientA emails
@@ -64,9 +63,7 @@ def delete_emails(context):
 
     context.gmail.log_in(context.gmail.recipientA['email'], context.gmail.recipientA['password'])
 
-    context.gmail.context.browser.get(context.gmail.base_url + '#inbox')
-    wait.until(ec.title_contains('Inbox'))
-    context.gmail.select_all_and_delete(wait)
+    context.gmail.select_all_and_delete(wait, 'in:inbox', 'Search results')
 
     context.gmail.empty_trash(wait)
 
@@ -76,8 +73,6 @@ def delete_emails(context):
 
     context.gmail.log_in(context.gmail.recipientB['email'], context.gmail.recipientB['password'])
 
-    context.gmail.context.browser.get(context.gmail.base_url + '#inbox')
-    wait.until(ec.title_contains('Inbox'))
-    context.gmail.select_all_and_delete(wait)
+    context.gmail.select_all_and_delete(wait, 'in:inbox', 'Search results')
 
     context.gmail.empty_trash(wait)

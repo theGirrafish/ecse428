@@ -1,6 +1,7 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 import os
 
 class Gmail:
@@ -23,7 +24,7 @@ class Gmail:
                     'password': 'Ecse428AssignmentB'}
         self.invalidRecipient = {'email': 'notvalid.1.gmail@com'}
 
-        self.login_url = 'https://www.gmail.com'
+        self.login_url = 'https://accounts.google.com/signin/v2/identifier?service=mail&hl=en'
         self.base_url = 'https://mail.google.com/mail/'
 
     def log_in(self, username, password):
@@ -70,8 +71,9 @@ class Gmail:
         return Exception('User %s not defined' % user)
 
     def compose_email(self):
-        self.context.browser.find_element(By.XPATH, '//*[@role="button"][text()="Compose"]').click()
         wait = WebDriverWait(self.context.browser, self.timeout)
+        compose_btn = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@role="button"][text()="Compose"]')))
+        compose_btn.click()
         wait.until(ec.element_to_be_clickable((By.XPATH, '//*[text()="New Message"]')))
 
     def attach_image(self, image_file, expect_failure=False):
@@ -87,25 +89,37 @@ class Gmail:
         wait = WebDriverWait(self.context.browser, self.timeout)
         self.context.browser.find_element(By.CSS_SELECTOR, '[role="button"][aria-label~="Send"]').click()
         if not expect_failure:
-            # wait.until(ec.element_to_be_clickable((By.ID, 'link_undo')))
             wait.until(ec.element_to_be_clickable((By.XPATH, '//*[text()="Message sent."]')))
 
     def check_email_received(self, recipient):
         pass
 
-    def select_all_and_delete(self, wait):
+    def select_all_and_delete(self, wait, path, title, draft=False):
+        search = self.context.browser.find_element(By.CSS_SELECTOR, '[aria-label="Search mail"]')
+        search.clear()
+        search.send_keys(path)
+        search.send_keys(Keys.ENTER)
+        wait.until(ec.title_contains(title))
         for elem in self.context.browser.find_elements(By.CSS_SELECTOR, 'div[role="button"][aria-label="Select"] span[role="checkbox"]'):
             if elem.is_displayed():
                 elem.click()
                 break
-        for elem in self.context.browser.find_elements(By.CSS_SELECTOR, '[role="button"][aria-label="Delete"]'):
-            if elem.is_displayed():
-                elem.click()
-                break
-        wait.until(ec.element_to_be_clickable((By.XPATH, '//*[contains(text(),"moved to")]')))
+        if draft:
+            self.context.browser.find_element(By.XPATH, '//*[text()="Discard drafts"]').click()
+            wait.until(ec.presence_of_element_located((By.XPATH, '//*[contains(text(),"deleted")]')))
+        else:
+            for elem in self.context.browser.find_elements(By.CSS_SELECTOR, '[role="button"][aria-label="Delete"]'):
+                if elem.is_displayed():
+                    elem.click()
+                    break
+            wait.until(ec.presence_of_element_located((By.XPATH, '//*[contains(text(),"moved to")]')))
 
     def empty_trash(self, wait):
-        self.context.browser.get(self.base_url + '#trash')
+        search = self.context.browser.find_element(By.CSS_SELECTOR, '[aria-label="Search mail"]')
+        search.clear()
+        search.send_keys('in:trash')
+        search.send_keys(Keys.ENTER)
+        wait.until(ec.title_contains('Trash'))
         empty_btn = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@role="button"][contains(text(), "Empty")]')))
         empty_btn.click()
         delete_btn = wait.until(ec.element_to_be_clickable((By.CSS_SELECTOR, '[role="alertdialog"]:not([aria-hidden]) [name="ok"]')))

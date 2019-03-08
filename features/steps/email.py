@@ -17,9 +17,6 @@ def step_given_composing(context):
 @given('it is addressed to "{recipient}"')
 def step_given_recipient(context, recipient):
     email = context.gmail.get_credentials(recipient)['email']
-    # if is_new_ui():
-    #     recp_btn = context.browser.find_element(By.XPATH, '//div[text()="Recipients"]/..')
-    #     recp_btn.click()
     context.gmail.fill_field(By.NAME, 'to', email)
 
 @given('the subject contains "{subject}"')
