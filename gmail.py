@@ -114,10 +114,10 @@ class Gmail:
     def check_email_received(self, recipient, subject):
         emails_table = self.context.browser.find_element(By.XPATH, '//*[@class="F cf zt"]')
 
-        emails = emails_table.find_elements(By.XPATH, '//*[contains(@class,"zA")]')
+        emails = emails_table.find_elements(By.XPATH, './/*[contains(@class,"zA")]')
         for email in emails:
-            subject = email.find_element(By.XPATH,  '//*[contains(@class,"bog")]').find_element(By.TAG_NAME, 'span')
-            if subject.text == subject:
+            subject_span = email.find_element(By.XPATH,  './/*[contains(@class,"bog")]').find_element(By.TAG_NAME, 'span')
+            if subject_span.text == subject:
                 return True
         return False
 

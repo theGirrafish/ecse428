@@ -57,7 +57,7 @@ def step_then_recipient(context, recipient, subject):
     context.gmail.log_out()
     recipient = context.gmail.get_credentials(recipient)
     context.gmail.log_in(recipient['email'], recipient['password'])
-    assert context.gmail.check_email_received(recipient, subject),'Subject does not match'
+    assert context.gmail.check_email_received(recipient, subject), 'Subject does not match'
 
 @then('it should be from the Sender')
 def step_then_sender(context):
