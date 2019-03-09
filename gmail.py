@@ -119,6 +119,7 @@ class Gmail:
             subject = email.find_element(By.XPATH,  '//*[contains(@class,"bog")]').find_element(By.TAG_NAME, 'span')
             if subject.text == subject:
                 return True
+        return False
 
     def select_all_and_delete(self, wait, path, title, draft=False):
         search = self.context.browser.find_element(By.CSS_SELECTOR, '[aria-label="Search mail"]')

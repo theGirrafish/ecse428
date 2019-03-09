@@ -10,7 +10,7 @@ import os
 
 from gmail import Gmail
 
-DEBUG = True
+DEBUG = False
 HEADLESS = False
 
 @fixture
