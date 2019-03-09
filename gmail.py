@@ -22,7 +22,6 @@ class Gmail:
                     'password': 'Ecse428AssignmentB'}
         self.recipientB = {'email': 'recipientb.ecse428@gmail.com',
                     'password': 'Ecse428AssignmentB'}
-        self.invalidRecipient = {'email': 'notvalid.1.gmail@com'}
 
         self.login_url = 'https://accounts.google.com/signin/v2/identifier?service=mail&hl=en'
         self.base_url = 'https://mail.google.com/mail/'

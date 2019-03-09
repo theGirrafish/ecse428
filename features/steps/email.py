@@ -16,7 +16,10 @@ def step_given_composing(context):
 
 @given('it is addressed to "{recipient}"')
 def step_given_recipient(context, recipient):
-    email = context.gmail.get_credentials(recipient)['email']
+    try:
+        email = context.gmail.get_credentials(recipient)['email']
+    except:
+        email = recipient
     context.gmail.fill_field(By.NAME, 'to', email)
 
 @given('the subject contains "{subject}"')
@@ -31,9 +34,10 @@ def step_given_body(context):
 def step_given_image(context, image):
     context.gmail.attach_image(image)
 
-@when('we attach "{image}" to the email')
-def step_when_image(context, image):
-    context.gmail.attach_image(image, expect_failure=True)
+@when('we attach "{images}" to the email')
+def step_when_image(context, images):
+    img_lst = images.strip().split(' ')
+    context.gmail.attach_image(images, expect_failure=True)
 
 @when('we send the email')
 def step_when_send_email(context):
@@ -71,6 +75,6 @@ def step_then_image(context):
 def step_then_error_email(context):
     pass
 
-@then('we should receive an attachment error')
-def step_then_error_attachment(context):
+@then('we should be prompted to upload to Google Drive')
+def step_then_upload_attachment(context):
     pass
