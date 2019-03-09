@@ -19,10 +19,8 @@ Feature: Send email with image attachment
         When we send the email
         Then "<recipient>" should receive the email with subject "<subject>"
         And it should be from the Sender
-        And it should be addressed to "<recipient>"
-        And the subject should match
         And the body should match the sample text
-        And the attachment should match the image
+        And the attachment should match "<image>"
 
         Examples:
             | subject       | recipient  | image       |

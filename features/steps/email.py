@@ -57,27 +57,23 @@ def step_then_recipient(context, recipient, subject):
     context.gmail.log_out()
     recipient = context.gmail.get_credentials(recipient)
     context.gmail.log_in(recipient['email'], recipient['password'])
-    assert context.gmail.check_email_received(recipient, subject), 'Subject does not match'
+    assert context.gmail.check_email_received(subject), 'Email subject does not match'
 
 @then('it should be from the Sender')
 def step_then_sender(context):
-    pass
-
-@then('it should be addressed to "{recipient}"')
-def step_then_recipient_address(context, recipient):
-    pass
-
-@then('the subject should match')
-def step_then_subject(context):
-    pass
+    subject = context.active_outline[0]
+    assert context.gmail.check_email_sender(subject), 'Sender email does not match'
 
 @then('the body should match the sample text')
 def step_then_body(context):
-    pass
+    subject = context.active_outline[0]
+    # TODO: Need to find a way to get the context.text from the body. Currently gives None.
+    assert context.gmail.check_email_body(subject, context.text), 'Email body does not match'
 
-@then('the attachment should match the image')
-def step_then_image(context):
-    pass
+@then('the attachment should match "{image}"')
+def step_then_attachment(context, image):
+    subject = context.active_outline[0]
+    assert context.gmail.check_email_attachment(subject, image), 'Image attachment does not match'
 
 @then('we should receive an email error')
 def step_then_error_email(context):

@@ -111,7 +111,7 @@ class Gmail:
         if not expect_failure:
             wait.until(ec.element_to_be_clickable((By.XPATH, '//*[text()="Message sent."]')))
 
-    def check_email_received(self, recipient, subject):
+    def check_email_received(self, subject):
         emails_table = self.context.browser.find_element(By.XPATH, '//*[@class="F cf zt"]')
 
         emails = emails_table.find_elements(By.XPATH, './/*[contains(@class,"zA")]')
@@ -119,6 +119,43 @@ class Gmail:
             subject_span = email.find_element(By.XPATH,  './/*[contains(@class,"bog")]').find_element(By.TAG_NAME, 'span')
             if subject_span.text == subject:
                 return True
+        return False
+
+    def check_email_sender(self, subject):
+        emails_table = self.context.browser.find_element(By.XPATH, '//*[@class="F cf zt"]')
+
+        emails = emails_table.find_elements(By.XPATH, './/*[contains(@class,"zA")]')
+        for email in emails:
+            subject_span = email.find_element(By.XPATH,  './/*[contains(@class,"bog")]').find_element(By.TAG_NAME, 'span')
+            if subject_span.text == subject:
+                sender_span = email.find_element(By.XPATH, './/*[@class="yX xY "]').find_element(By.XPATH, './/*[@class="zF"]')
+                if sender_span.get_attribute('email') == self.sender['email']:
+                    return True
+        return False
+
+    def check_email_body(self, subject, text):
+        emails_table = self.context.browser.find_element(By.XPATH, '//*[@class="F cf zt"]')
+
+        emails = emails_table.find_elements(By.XPATH, './/*[contains(@class,"zA")]')
+        for email in emails:
+            subject_span = email.find_element(By.XPATH,  './/*[contains(@class,"bog")]').find_element(By.TAG_NAME, 'span')
+            if subject_span.text == subject:
+                body_span = email.find_element(By.XPATH, './/*[@class="y2"]')
+                text = text.replace('\n', ' ')
+                if body_span.text == f' - {text}':
+                    return True
+        return False
+
+    def check_email_attachment(self, subject, image):
+        emails_table = self.context.browser.find_element(By.XPATH, '//*[@class="F cf zt"]')
+
+        emails = emails_table.find_elements(By.XPATH, './/*[contains(@class,"zA")]')
+        for email in emails:
+            subject_span = email.find_element(By.XPATH,  './/*[contains(@class,"bog")]').find_element(By.TAG_NAME, 'span')
+            if subject_span.text == subject:
+                attachment_span = email.find_element(By.XPATH, './/*[@class="brg"]')
+                if attachment_span.text == image:
+                    return True
         return False
 
     def select_all_and_delete(self, wait, path, title, draft=False):
