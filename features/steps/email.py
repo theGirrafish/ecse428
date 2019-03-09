@@ -37,7 +37,12 @@ def step_given_image(context, image):
 @when('we attach "{images}" to the email')
 def step_when_image(context, images):
     img_lst = images.strip().split(' ')
-    context.gmail.attach_image(images, expect_failure=True)
+    end = len(img_lst) - 1
+    for i, img in enumerate(img_lst):
+        if i == end:
+            context.gmail.attach_image(img, expect_failure=True)
+        else:
+            context.gmail.attach_image(img)
 
 @when('we send the email')
 def step_when_send_email(context):

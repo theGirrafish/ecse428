@@ -30,7 +30,7 @@ Feature: Send email with image attachment
             | recipientB   | imageB.jpg  |
             | recipientA   | imageB.jpg  |
             | recipientB   | imageA.jpg  |
-            | recipientA   | imageC1.jpg |
+            | recipientA   | imageC1.png |
 
     Scenario Outline: Alternative Flow: Send an email to <recipient> with <images> attachment too large
         Given we are composing an email
@@ -50,8 +50,8 @@ Feature: Send email with image attachment
             | recipient  | images                              |
             | recipientA | imageLarge.jpg                      |
             | recipientB | imageLarge.jpg                      |
-            | recipientA | imageC1.jpg imageC2.png imageC3.jpg |
-            | recipientB | imageC1.jpg imageC2.png imageC3.jpg |
+            | recipientA | imageC1.png imageC2.png imageC3.jpg |
+            | recipientB | imageC1.png imageC2.png imageC3.jpg |
             | recipientA | imageA.jpg imageLarge.jpg           |
 
     Scenario Outline: Error Flow: Send an email to <recipient> with invalid email address and <image>
