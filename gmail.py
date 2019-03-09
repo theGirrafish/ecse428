@@ -3,6 +3,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import os
+import os.path as op
 
 class Gmail:
     def __init__(self, context, timeout):
@@ -11,17 +12,27 @@ class Gmail:
 
         self.new_ui = False
 
-        self.images_dir = os.path.join(os.getcwd(), 'images')
-        self.debug_dir = os.path.join(os.getcwd(), 'debug')
-        if not os.path.exists(self.debug_dir):
+        ROOT_DIR = op.dirname(op.abspath(__file__))
+        self.images_dir = op.join(ROOT_DIR, 'images')
+        self.debug_dir = op.join(ROOT_DIR, 'debug')
+        if not op.exists(self.debug_dir):
             os.makedirs(self.debug_dir)
 
-        self.sender = {'email': 'sender.ecse428@gmail.com',
-                'password': 'Ecse428AssignmentB'}
-        self.recipientA = {'email': 'recipienta.ecse428@gmail.com',
-                    'password': 'Ecse428AssignmentB'}
-        self.recipientB = {'email': 'recipientb.ecse428@gmail.com',
-                    'password': 'Ecse428AssignmentB'}
+        self.sender = {
+            'email': 'sender.ecse428@gmail.com',
+            'password': 'Ecse428AssignmentB'
+        }
+        self.recipientA = {
+            'email': 'recipienta.ecse428@gmail.com',
+            'password': 'Ecse428AssignmentB'
+        }
+        self.recipientB = {
+            'email': 'recipientb.ecse428@gmail.com',
+            'password': 'Ecse428AssignmentB'
+        }
+        self.invalidRecipient = {
+            'email': 'notvalid.1.gmail@com'
+        }
 
         self.login_url = 'https://accounts.google.com/signin/v2/identifier?service=mail&hl=en'
         self.base_url = 'https://mail.google.com/mail/'
@@ -54,6 +65,16 @@ class Gmail:
 
         wait.until(ec.title_contains(username))
 
+    def log_out(self):
+        wait = WebDriverWait(self.context.browser, self.timeout)
+        account_btn = self.context.browser.find_element(By.XPATH, '//*[@class="gb_x gb_Da gb_f"]')
+        account_btn.click()
+
+        log_out_btn = wait.until(ec.element_to_be_clickable((By.XPATH, '//*[@class="gb_0 gb_Vf gb_3f gb_Be gb_gb"]')))
+        log_out_btn.click()
+
+        self.context.browser.delete_all_cookies()
+
     def fill_field(self, method, field_path, text):
         field = self.context.browser.find_element(method, field_path)
         field.send_keys(text)
@@ -67,7 +88,7 @@ class Gmail:
             return self.invalidRecipient
         if user == 'Sender':
             return self.sender
-        return Exception('User %s not defined' % user)
+        return Exception(f'User {user} not defined')
 
     def compose_email(self):
         wait = WebDriverWait(self.context.browser, self.timeout)
@@ -76,13 +97,13 @@ class Gmail:
         wait.until(ec.element_to_be_clickable((By.XPATH, '//*[text()="New Message"]')))
 
     def attach_image(self, image_file, expect_failure=False):
-        image_path = os.path.join(self.images_dir, image_file)
+        image_path = op.join(self.images_dir, image_file)
         attach = self.context.browser.find_element(By.NAME, 'Filedata')
         attach.send_keys(image_path)
 
         if not expect_failure:
             wait = WebDriverWait(self.context.browser, self.timeout)
-            wait.until(ec.element_to_be_clickable((By.CSS_SELECTOR, '[aria-label*="Attachment: %s"]' % image_file)))
+            wait.until(ec.element_to_be_clickable((By.CSS_SELECTOR, f'[aria-label*="Attachment: {image_file}"]')))
 
     def send_email(self, expect_failure=False):
         wait = WebDriverWait(self.context.browser, self.timeout)
@@ -90,8 +111,14 @@ class Gmail:
         if not expect_failure:
             wait.until(ec.element_to_be_clickable((By.XPATH, '//*[text()="Message sent."]')))
 
-    def check_email_received(self, recipient):
-        pass
+    def check_email_received(self, recipient, subject):
+        emails_table = self.context.browser.find_element(By.XPATH, '//*[@class="F cf zt"]')
+
+        emails = emails_table.find_elements(By.XPATH, '//*[contains(@class,"zA")]')
+        for email in emails:
+            subject = email.find_element(By.XPATH,  '//*[contains(@class,"bog")]').find_element(By.TAG_NAME, 'span')
+            if subject.text == subject:
+                return True
 
     def select_all_and_delete(self, wait, path, title, draft=False):
         search = self.context.browser.find_element(By.CSS_SELECTOR, '[aria-label="Search mail"]')

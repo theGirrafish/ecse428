@@ -34,7 +34,7 @@ def step_given_body(context):
 def step_given_image(context, image):
     context.gmail.attach_image(image)
 
-@when('we attach "{images}" to the email')
+@when('we attached "{images}" to the email')
 def step_when_image(context, images):
     img_lst = images.strip().split(' ')
     end = len(img_lst) - 1
@@ -52,9 +52,13 @@ def step_when_send_email(context):
 def step_when_try_email(context):
     context.gmail.send_email(expect_failure=True)
 
-@then('"{recipient}" should receive the email')
-def step_then_recipient(context, recipient):
-    context.gmail.check_email_received(recipient)
+@then('"{recipient}" should receive the email with subject "{subject}"')
+def step_then_recipient(context, recipient, subject):
+    context.gmail.log_out()
+    recipient = context.gmail.get_credentials(recipient)
+    context.gmail.log_in(recipient['email'], recipient['password'])
+
+    context.gmail.check_email_received(recipient, subject)
 
 @then('it should be from the Sender')
 def step_then_sender(context):
