@@ -1,6 +1,8 @@
 from behave import given, when, then
 from selenium.webdriver.common.by import By
 
+from locators import ComposeEmailLocators, AlertLocators
+
 @given('we have logged into gmail')
 def step_logged_in(context):
     sender = context.gmail.get_credentials('Sender')
@@ -20,15 +22,16 @@ def step_given_recipient(context, recipient):
         email = context.gmail.get_credentials(recipient)['email']
     except:
         email = recipient
-    context.gmail.fill_field(By.NAME, 'to', email)
+    context.gmail.fill_field(ComposeEmailLocators.RECIPIENT, email)
 
 @given('the subject contains "{subject}"')
 def step_given_subject(context, subject):
-    context.gmail.fill_field(By.CSS_SELECTOR, '[name="subjectbox"][placeholder="Subject"]', subject)
+    context.gmail.fill_field(ComposeEmailLocators.SUBJECT, subject)
 
 @given('a sample text is entered in the body')
 def step_given_body(context):
-    context.gmail.fill_field(By.CSS_SELECTOR, '[aria-label="Message Body"][role="textbox"]', context.text)
+    context.gmail.body = context.text
+    context.gmail.fill_field(ComposeEmailLocators.BODY, context.text)
 
 @given('we attached "{image}" to the email')
 def step_given_image(context, image):
@@ -57,7 +60,10 @@ def step_then_recipient(context, recipient, subject):
     context.gmail.log_out()
     recipient = context.gmail.get_credentials(recipient)
     context.gmail.log_in(recipient['email'], recipient['password'])
-    assert context.gmail.check_email_received(subject), 'Email subject does not match'
+    try:
+        assert context.gmail.check_email_received(subject), 'Email subject does not match'
+    except:
+        assert False
 
 @then('it should be from the Sender')
 def step_then_sender(context):
@@ -67,18 +73,25 @@ def step_then_sender(context):
 @then('the body should match the sample text')
 def step_then_body(context):
     subject = context.active_outline[0]
-    # TODO: Need to find a way to get the context.text from the body. Currently gives None.
-    assert context.gmail.check_email_body(subject, context.text), 'Email body does not match'
+    assert context.gmail.check_email_body(subject, context.gmail.body), 'Email body does not match'
 
-@then('the attachment should match "{image}"')
-def step_then_attachment(context, image):
+@then('the attachment/s should match "{images}"')
+def step_then_attachments(context, images):
+    img_lst = images.strip().split(' ')
     subject = context.active_outline[0]
-    assert context.gmail.check_email_attachment(subject, image), 'Image attachment does not match'
+    for img in img_lst:
+        assert context.gmail.check_email_attachment(subject, img), 'Image attachment does not match'
 
 @then('we should receive an email error')
 def step_then_error_email(context):
-    pass
+    email_alert = context.browser.find_element(*AlertLocators.ALERT)
+    alert_text = email_alert.find_element(By.CSS_SELECTOR, 'span[role="heading"]')
+    assert 'Error' in alert_text.text, 'Failed to find email error'
 
 @then('we should be prompted to upload to Google Drive')
 def step_then_upload_attachment(context):
-    pass
+    assert context.gmail.upload_to_drive(), 'Failed to upload to Drive'
+
+@then('we should be able to send the email')
+def step_then_send_email(context):
+    assert context.gmail.send_email(share_prompt=True), 'Failed to send email'
