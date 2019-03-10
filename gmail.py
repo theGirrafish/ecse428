@@ -52,7 +52,8 @@ class Gmail:
         if 'https://accounts.google.com/signin/v2/identifier?' in self.context.browser.current_url:
             self.new_ui = True
 
-            self.context.browser.find_element(*LoginLocators.USER_V1).send_keys(username)
+            email = wait.until(ec.presence_of_element_located(LoginLocators.USER_V1))
+            email.send_keys(username)
 
             self.context.browser.find_element(*LoginLocators.NEXT_V1).click()
 
@@ -61,7 +62,9 @@ class Gmail:
 
             self.context.browser.find_element(*LoginLocators.LOGIN_V1).click()
         else:
-            self.context.browser.find_element(*LoginLocators.USER_V2).send_keys(username)
+            email = wait.until(ec.presence_of_element_located(LoginLocators.USER_V2))
+            email.send_keys(username)
+            
             self.context.browser.find_element(*LoginLocators.NEXT_V2).click()
 
             password_field = wait.until(ec.element_to_be_clickable(LoginLocators.PASSWORD_V2))
@@ -139,12 +142,14 @@ class Gmail:
 
         emails = emails_table.find_elements(*PageLocators.EMAIL_IN_TABLE)
         if len(emails) == 0:
+            self.context.browser.refresh()
             raise Exception("No emails in inbox")
         for email in emails:
             subject_span = email.find_element(*PageLocators.SUBJECT).find_element(By.TAG_NAME, 'span')
             if subject_span.text == subject:
                 return True
             else:
+                self.context.browser.refresh()
                 raise Exception("No email found with matching subject")
 
     def check_email_sender(self, subject):
