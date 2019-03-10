@@ -1,6 +1,6 @@
 # ECSE428-AssignmentB
 
-UI testing for Gmail.
+UI-based testing for sending emails with image attachments in Gmail.
 
 ## Requirements
 
