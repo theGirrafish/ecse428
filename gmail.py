@@ -7,7 +7,7 @@ from retrying import retry
 import os
 import os.path as op
 
-from locators import LoginLocators, LogoutLocators, ComposeEmailLocators, PageLocators, AlertLocators
+from locators import *
 
 class Gmail:
     def __init__(self, context, timeout):

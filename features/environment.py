@@ -5,7 +5,6 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.firefox import GeckoDriverManager
 import os
 
 from gmail import Gmail
@@ -27,7 +26,6 @@ def browser(context):
         if DEBUG:
             options.add_argument('--remote-debugging-port=9222')
     context.browser = webdriver.Chrome(executable_path=ChromeDriverManager().install(), chrome_options=options)
-#     context.browser = webdriver.Firefox(executable_path=GeckoDriverManager().install())
     yield context.browser
     context.browser.quit()
 
