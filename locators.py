@@ -50,4 +50,4 @@ class PageLocators():
 class AlertLocators():
     ALERT = (By.CSS_SELECTOR, '[role="alertdialog"]')
     DIALOG_UPLOAD = (By.XPATH, '//*[@role="dialog"] //span[@role="heading"][text()="Attaching File"]')
-    DIALOG_SHARE = (By.CSS_SELECTOR, '[role="dialog"][guidedhelpid="drive_share_dialog"]')
+    DIALOG_FRAME = (By.CLASS_NAME, 'Qr-Mr-Jz-avO')

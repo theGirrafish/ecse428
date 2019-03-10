@@ -119,19 +119,19 @@ class Gmail:
             return False
         if share_prompt:
             try:
-                share_dialog = wait.until(ec.presence_of_element_located(AlertLocators.DIALOG_SHARE))
-                send_btn = share_dialog.find_element(By.XPATH, '//*[text()="Send"]')
-                send_btn.click()
-                # self.context.browser.execute_script('arguments[0].click();', send_btn)
-                wait.until_not(ec.element_to_be_clickable(AlertLocators.DIALOG_SHARE))
+                share_dialog = wait.until(ec.visibility_of_element_located(AlertLocators.DIALOG_FRAME))
+                self.context.browser.switch_to.frame(share_dialog)
+                self.context.browser.find_element(By.XPATH, '//*[text()="Send"]').click()
+                self.context.browser.switch_to.default_content()
+                wait.until_not(ec.visibility_of_element_located(AlertLocators.DIALOG_FRAME))
             except TimeoutException:
                 return False
         if not expect_failure:
             try:
-                wait.until(ec.element_to_be_clickable(ComposeEmailLocators.SENT_PROMPT))
+                wait.until(ec.presence_of_element_located(ComposeEmailLocators.SENT_PROMPT))
             except TimeoutException:
                 return False
-        return False
+        return True
 
     @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
     def check_email_received(self, subject):
@@ -170,7 +170,7 @@ class Gmail:
                 text = text.replace('\n', '').replace(' ', '')
                 body_text = body_span.text
                 body_text = body_text.strip().replace('\n', '').replace(' ', '').replace('-', '')
-                if body_text == text:
+                if text in body_text:
                     return True
         return False
 
