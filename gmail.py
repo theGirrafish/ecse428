@@ -1,5 +1,5 @@
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoAlertPresentException, TimeoutException
@@ -9,7 +9,7 @@ import os.path as op
 
 from locators import *
 
-# Provides helper methods for UI automation in Gmail
+# Provides helper methods for UI test automation in Gmail
 class Gmail:
     def __init__(self, context, timeout):
         self.context = context
@@ -135,7 +135,7 @@ class Gmail:
                 return False
         return True
 
-    # Verifies the recipient received the email
+    # Verifies that the recipient received the email
     @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
     def check_email_received(self, subject):
         emails_table = self.context.browser.find_element(*PageLocators.EMAIL_TABLE)
@@ -152,7 +152,7 @@ class Gmail:
                 self.context.browser.refresh()
                 raise Exception("No email found with matching subject")
 
-    # Verifies an email contains the proper subject
+    # Verifies that the email contains the proper subject
     def check_email_sender(self, subject):
         emails_table = self.context.browser.find_element(*PageLocators.EMAIL_TABLE)
 
@@ -165,7 +165,7 @@ class Gmail:
                     return True
         return False
 
-    # Verifies an email contains the proper body
+    # Verifies that the email contains the proper body
     def check_email_body(self, subject, text):
         emails_table = self.context.browser.find_element(*PageLocators.EMAIL_TABLE)
 
@@ -181,7 +181,7 @@ class Gmail:
                     return True
         return False
 
-    # Verifies an email contains the proper attachment
+    # Verifies that the email contains the proper attachment
     def check_email_attachment(self, subject, image):
         emails_table = self.context.browser.find_element(*PageLocators.EMAIL_TABLE)
 

@@ -47,32 +47,27 @@ def after_step(context, step):
 
 # Function for deleting emails for all sender and recipients
 def delete_emails(context):
-    # Delete sender emails
+    # Delete emails from sender's inbox
     use_fixture(browser, context)
     wait = WebDriverWait(context.browser, context.gmail.timeout)
 
     context.gmail.log_in(context.gmail.sender['email'], context.gmail.sender['password'])
-
     context.gmail.select_all_and_delete(wait, 'in:sent', 'Sent')
     context.gmail.select_all_and_delete(wait, 'in:draft', 'Drafts', draft=True)
     context.gmail.empty_trash(wait)
 
-    # Delete recipientA emails
+    # Delete emails from recipientA's inbox
     use_fixture(browser, context)
     wait = WebDriverWait(context.browser, context.gmail.timeout)
 
     context.gmail.log_in(context.gmail.recipientA['email'], context.gmail.recipientA['password'])
-
     context.gmail.select_all_and_delete(wait, 'in:inbox', 'Search results')
-
     context.gmail.empty_trash(wait)
 
-    # Delete recipientB emails
+    # Delete emails from recipientB's inbox
     use_fixture(browser, context)
     wait = WebDriverWait(context.browser, context.gmail.timeout)
 
     context.gmail.log_in(context.gmail.recipientB['email'], context.gmail.recipientB['password'])
-
     context.gmail.select_all_and_delete(wait, 'in:inbox', 'Search results')
-
     context.gmail.empty_trash(wait)
