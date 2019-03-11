@@ -15,8 +15,6 @@ class Gmail:
         self.context = context
         self.timeout = timeout
 
-        self.new_ui = False
-
         ROOT_DIR = op.dirname(op.abspath(__file__))
         self.images_dir = op.join(ROOT_DIR, 'images')
         self.debug_dir = op.join(ROOT_DIR, 'debug')
@@ -35,9 +33,6 @@ class Gmail:
             'email': 'recipientb.ecse428@gmail.com',
             'password': 'Ecse428AssignmentB'
         }
-        self.invalidRecipient = {
-            'email': 'notvalid.1.gmail@com'
-        }
 
         self.body = ""
 
@@ -52,8 +47,6 @@ class Gmail:
 
         # Check if we are given the new signin form
         if 'https://accounts.google.com/signin/v2/identifier?' in self.context.browser.current_url:
-            self.new_ui = True
-
             email = wait.until(ec.presence_of_element_located(LoginLocators.USER_V1))
             email.send_keys(username)
 
@@ -98,8 +91,6 @@ class Gmail:
             return self.recipientA
         if user == 'recipientB':
             return self.recipientB
-        if user == 'invalidRecipient':
-            return self.invalidRecipient
         if user == 'Sender':
             return self.sender
         raise Exception(f'User {user} not defined')
