@@ -26,7 +26,7 @@ To add new Gherkin tests, first add your Gherkin acceptance test definition as a
 
 Gherkin step:
 
-```text
+```gherkin
 Given we are at the login page
 ```
 
