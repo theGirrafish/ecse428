@@ -1,5 +1,6 @@
 from selenium.webdriver.common.by import By
 
+# Provides locators for login page
 class LoginLocators():
     USER_V1 = (By.ID, 'identifierId')
     PASSWORD_V1 = (By.CSS_SELECTOR, '#password  input')
@@ -11,10 +12,12 @@ class LoginLocators():
     NEXT_V2 = (By.NAME, 'signIn')
     LOGIN_V2 = (By.ID, 'signIn')
 
+# Provides locators for logout dialog
 class LogoutLocators():
     ACCOUNT = (By.XPATH, '//*[@class="gb_x gb_Da gb_f"]')
     LOGOUT = (By.XPATH, '//*[@class="gb_0 gb_Vf gb_3f gb_Be gb_gb"]')
 
+# Provides locators for compose email dialog
 class ComposeEmailLocators():
     COMPOSE = (By.XPATH, '//*[@role="button"][text()="Compose"]')
     HEADER = (By.XPATH, '//*[text()="New Message"]')
@@ -28,6 +31,7 @@ class ComposeEmailLocators():
     def get_attachment_field(name):
         return (By.CSS_SELECTOR, f'[aria-label*="Attachment: {name}"]')
 
+# Provides common page locators
 class PageLocators():
     EMAIL_TABLE = (By.XPATH, '//*[@class="F cf zt"]')
     EMAIL_IN_TABLE = (By.XPATH, './/*[contains(@class,"zA")]')
@@ -47,6 +51,7 @@ class PageLocators():
     CONFIRM_EMPTY = (By.CSS_SELECTOR, '[role="alertdialog"]:not([aria-hidden]) [name="ok"]')
     EMPTY_PROMPT = (By.XPATH, '//*[text()="All messages have been deleted."]')
 
+# Provides locators for alert dialogs
 class AlertLocators():
     ALERT = (By.CSS_SELECTOR, '[role="alertdialog"]')
     DIALOG_UPLOAD = (By.XPATH, '//*[@role="dialog"] //span[@role="heading"][text()="Attaching File"]')

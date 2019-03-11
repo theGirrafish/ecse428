@@ -45,6 +45,7 @@ def after_step(context, step):
         image_name = os.path.join(context.gmail.debug_dir, f'{step.step_type}_{step_name}.png')
         context.browser.save_screenshot(image_name)
 
+# Function for deleting emails for all sender and recipients
 def delete_emails(context):
     # Delete sender emails
     use_fixture(browser, context)

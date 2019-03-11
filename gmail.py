@@ -9,6 +9,7 @@ import os.path as op
 
 from locators import *
 
+# Provides helper methods for UI automation in Gmail
 class Gmail:
     def __init__(self, context, timeout):
         self.context = context
@@ -43,6 +44,7 @@ class Gmail:
         self.login_url = 'https://accounts.google.com/signin/v2/identifier?service=mail&hl=en'
         self.base_url = 'https://mail.google.com/mail/'
 
+    # Logs in an existing user using the provided credentials
     def log_in(self, username, password):
         self.context.browser.get(self.login_url)
 
@@ -64,7 +66,7 @@ class Gmail:
         else:
             email = wait.until(ec.presence_of_element_located(LoginLocators.USER_V2))
             email.send_keys(username)
-            
+
             self.context.browser.find_element(*LoginLocators.NEXT_V2).click()
 
             password_field = wait.until(ec.element_to_be_clickable(LoginLocators.PASSWORD_V2))
@@ -74,6 +76,7 @@ class Gmail:
 
         wait.until(ec.title_contains(username))
 
+    # Logs out a currently logged in user
     def log_out(self):
         wait = WebDriverWait(self.context.browser, self.timeout)
         account_btn = self.context.browser.find_element(*LogoutLocators.ACCOUNT)
@@ -84,10 +87,12 @@ class Gmail:
 
         self.context.browser.delete_all_cookies()
 
+    # Enters text into the provided field
     def fill_field(self, locator, text):
         field = self.context.browser.find_element(*locator)
         field.send_keys(text)
 
+    # Return credentials for provided user
     def get_credentials(self, user):
         if user == 'recipientA':
             return self.recipientA
@@ -99,12 +104,14 @@ class Gmail:
             return self.sender
         raise Exception(f'User {user} not defined')
 
+    # Brings up UI element for composing a new email
     def compose_email(self):
         wait = WebDriverWait(self.context.browser, self.timeout)
         compose_btn = wait.until(ec.element_to_be_clickable(ComposeEmailLocators.COMPOSE))
         compose_btn.click()
         wait.until(ec.element_to_be_clickable(ComposeEmailLocators.HEADER))
 
+    # Attaches an image to the email being composed
     def attach_image(self, image_file, expect_failure=False):
         image_path = op.join(self.images_dir, image_file)
         attach = self.context.browser.find_element(*ComposeEmailLocators.ATTACH_PATH)
@@ -114,6 +121,7 @@ class Gmail:
             wait = WebDriverWait(self.context.browser, self.timeout)
             wait.until(ec.element_to_be_clickable(ComposeEmailLocators.get_attachment_field(image_file)))
 
+    # Sends an email after finishing composing
     def send_email(self, expect_failure=False, share_prompt=False):
         wait = WebDriverWait(self.context.browser, self.timeout)
         try:
@@ -136,6 +144,7 @@ class Gmail:
                 return False
         return True
 
+    # Verifies the recipient received the email
     @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
     def check_email_received(self, subject):
         emails_table = self.context.browser.find_element(*PageLocators.EMAIL_TABLE)
@@ -152,6 +161,7 @@ class Gmail:
                 self.context.browser.refresh()
                 raise Exception("No email found with matching subject")
 
+    # Verifies an email contains the proper subject
     def check_email_sender(self, subject):
         emails_table = self.context.browser.find_element(*PageLocators.EMAIL_TABLE)
 
@@ -164,6 +174,7 @@ class Gmail:
                     return True
         return False
 
+    # Verifies an email contains the proper body
     def check_email_body(self, subject, text):
         emails_table = self.context.browser.find_element(*PageLocators.EMAIL_TABLE)
 
@@ -179,6 +190,7 @@ class Gmail:
                     return True
         return False
 
+    # Verifies an email contains the proper attachment
     def check_email_attachment(self, subject, image):
         emails_table = self.context.browser.find_element(*PageLocators.EMAIL_TABLE)
 
@@ -192,6 +204,7 @@ class Gmail:
                         return True
         return False
 
+    # Uploads an attachment to Google Drive
     def upload_to_drive(self):
         wait = WebDriverWait(self.context.browser, self.timeout)
         attachment_alert = self.context.browser.find_elements(*AlertLocators.ALERT)
@@ -211,6 +224,7 @@ class Gmail:
             return False
         return True
 
+    # Selects all elements on a page and deletes them
     def select_all_and_delete(self, wait, path, title, draft=False):
         search = self.context.browser.find_element(*PageLocators.SEARCH_BOX)
         search.clear()
@@ -231,6 +245,7 @@ class Gmail:
                     break
             wait.until(ec.presence_of_element_located(PageLocators.TRASH_PROMPT))
 
+    # Empties the trash
     def empty_trash(self, wait):
         search = self.context.browser.find_element(*PageLocators.SEARCH_BOX)
         search.clear()
